@@ -24,10 +24,6 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
         }
 
-        // Return success response with user data (excluding password)
-        const { password: _, ...userData } = user.toObject();
-        return NextResponse.json({ message: "Login successful", user: userData }, { status: 200 });
-
         //create token data
         const tokenData = {
             userId: user._id,
@@ -38,12 +34,11 @@ export async function POST(request: NextRequest) {
         // Generate JWT token
         const token = jwt.sign(tokenData, process.env.JWT_SECRET_KEY as string, { expiresIn: "1d" });
 
-        // Return success response with token
-        const response = NextResponse.json({ message: "Login successful", success: true, token }, { status: 200 });
-
+        // Return success response with token and user data (excluding password)
+        const { password: _, ...userData } = user.toObject();
+        const response = NextResponse.json({ message: "Login successful", success: true, token, user: userData }, { status: 200 });
         response.cookies.set("token", token, {
             httpOnly: true,
-           
         });
         return response;
 
