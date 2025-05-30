@@ -11,7 +11,7 @@ export const getDataFromToken = (request: NextRequest) => {
         return null;
     }
         const decoded:any = jwt.verify(token, process.env.JWT_SECRET_KEY! as string);
-        return decoded.id;
+        return decoded; // Return the whole decoded object
     } catch (error) {
         console.error("Invalid token:", error);
         return null;
